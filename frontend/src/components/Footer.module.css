@@ -1,0 +1,132 @@
+.footer {
+  background: rgba(248, 250, 252, 0.6);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(15, 23, 42, 0.04);
+  padding: 5rem 2rem 2.5rem;
+  margin-top: auto;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 3rem;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 420px;
+}
+
+.logo {
+  font-size: 1.35rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.logoDot {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tagline {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.links {
+  display: flex;
+  gap: 5rem;
+}
+
+.linkGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.linkGroup h4 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.footerLink {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.footerLink:hover {
+  color: var(--accent-cyan);
+  transform: translateX(2px);
+}
+
+.bottom {
+  border-top: 1px solid rgba(15, 23, 42, 0.04);
+  padding-top: 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.socials {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.socialIcon {
+  color: var(--text-secondary);
+  background: rgba(15, 23, 42, 0.02);
+  border: 1px solid rgba(15, 23, 42, 0.04);
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.socialIcon:hover {
+  color: #ffffff;
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  transform: translateY(-3px);
+}
+
+@media (max-width: 768px) {
+  .top {
+    flex-direction: column;
+    gap: 4rem;
+  }
+  
+  .links {
+    width: 100%;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+}

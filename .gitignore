@@ -1,1 +1,12 @@
 .DS_Store
+# Backend artifacts
+backend/server
+backend/portfolio.db.lock
+
+# Frontend artifacts
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+*.tsbuildinfo
+next-env.d.ts
