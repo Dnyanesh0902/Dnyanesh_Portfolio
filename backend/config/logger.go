@@ -1,0 +1,20 @@
+package config
+
+import (
+	"os"
+
+	"github.com/sirupsen/logrus"
+)
+
+var Log = logrus.New()
+
+func InitLogger() {
+	Log.SetFormatter(&logrus.TextFormatter{
+		FullTimestamp:   true,
+		TimestampFormat: "2006-01-02 15:04:05",
+		ForceColors:     true,
+	})
+	Log.SetOutput(os.Stdout)
+	Log.SetLevel(logrus.InfoLevel)
+	Log.Info("Logger initialized successfully with Text formatter")
+}

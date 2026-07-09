@@ -1,0 +1,44 @@
+package repositories
+
+import (
+	"portfolio-backend/models"
+	"gorm.io/gorm"
+)
+
+type ProjectRepository interface {
+	FindAll() ([]models.Project, error)
+	FindByID(id uint) (*models.Project, error)
+	Create(project *models.Project) error
+	Update(project *models.Project) error
+}
+
+type projectRepository struct {
+	db *gorm.DB
+}
+
+func NewProjectRepository(db *gorm.DB) ProjectRepository {
+	return &projectRepository{db: db}
+}
+
+func (r *projectRepository) FindAll() ([]models.Project, error) {
+	var projects []models.Project
+	err := r.db.Find(&projects).Error
+	return projects, err
+}
+
+func (r *projectRepository) FindByID(id uint) (*models.Project, error) {
+	var project models.Project
+	err := r.db.First(&project, id).Error
+	if err != nil {
+		return nil, err
+	}
+	return &project, nil
+}
+
+func (r *projectRepository) Create(project *models.Project) error {
+	return r.db.Create(project).Error
+}
+
+func (r *projectRepository) Update(project *models.Project) error {
+	return r.db.Save(project).Error
+}
