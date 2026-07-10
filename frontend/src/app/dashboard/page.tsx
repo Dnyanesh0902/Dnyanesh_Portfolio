@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, MessageSquare, PlusCircle, LogOut, CheckCircle, 
-  AlertTriangle, Code, Layers, Edit, Briefcase, ChevronRight, X, ShieldAlert
+  AlertTriangle, Code, Layers, Edit, Briefcase, ChevronRight, X, ShieldAlert,
+  UserPlus, User
 } from 'lucide-react';
 import styles from './dashboard.module.css';
 import { API_BASE_URL } from '@/config';
@@ -47,7 +48,7 @@ interface ExperienceItem {
 }
 
 export default function DashboardPage() {
-  const [activeTab, setActiveTab] = useState<'messages' | 'project' | 'skill' | 'experience'>('messages');
+  const [activeTab, setActiveTab] = useState<'messages' | 'project' | 'skill' | 'experience' | 'users'>('messages');
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [projects, setProjects] = useState<ProjectItem[]>([]);
   const [skills, setSkills] = useState<SkillItem[]>([]);
@@ -82,6 +83,11 @@ export default function DashboardPage() {
   const [expDesc, setExpDesc] = useState('');
   const [expIsIntern, setExpIsIntern] = useState(false);
   const [expOrder, setExpOrder] = useState(1);
+
+  // Form States - User Creation
+  const [newUserEmail, setNewUserEmail] = useState('');
+  const [newUserMobile, setNewUserMobile] = useState('');
+  const [newUserPassword, setNewUserPassword] = useState('');
 
   // Status message
   const [statusMsg, setStatusMsg] = useState({ text: '', type: '' });
@@ -377,6 +383,44 @@ export default function DashboardPage() {
       setStatusMsg({ text: err.message || 'Error occurred', type: 'error' });
     }
   };
+  const handleUserSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatusMsg({ text: '', type: '' });
+
+    if (newUserPassword.length < 6) {
+      setStatusMsg({ text: 'Password must be at least 6 characters long.', type: 'error' });
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/dashboard/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          email: newUserEmail,
+          mobileNumber: newUserMobile,
+          password: newUserPassword
+        }),
+      });
+
+      const resData = await res.json();
+      if (!res.ok) {
+        throw new Error(resData.error || 'Failed to create new user');
+      }
+
+      setStatusMsg({ text: 'New administrator user created successfully!', type: 'success' });
+      // Reset form
+      setNewUserEmail('');
+      setNewUserMobile('');
+      setNewUserPassword('');
+    } catch (err: any) {
+      setStatusMsg({ text: err.message || 'Error occurred', type: 'error' });
+    }
+  };
+
   const handleDeleteProject = async (id: number) => {
     if (!window.confirm('Are you sure you want to delete this project?')) return;
     try {
@@ -499,6 +543,13 @@ export default function DashboardPage() {
             className={`${styles.navItem} ${activeTab === 'experience' ? styles.navActive : ''}`}
           >
             <Briefcase size={18} /> Experience ({experiences.length})
+          </button>
+
+          <button
+            onClick={() => { setActiveTab('users'); setStatusMsg({ text: '', type: '' }); }}
+            className={`${styles.navItem} ${activeTab === 'users' ? styles.navActive : ''}`}
+          >
+            <UserPlus size={18} /> Add New User
           </button>
         </nav>
 
@@ -968,6 +1019,62 @@ export default function DashboardPage() {
                   ))}
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Tab 5: Users Panel */}
+          {activeTab === 'users' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3.5rem' }}>
+              <form onSubmit={handleUserSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <h3 className={styles.sectionHeading}>Create New Administrator Account</h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '-0.5rem', marginBottom: '0.5rem' }}>
+                  Register secondary credentials to allow co-administrators to log in and manage this portfolio.
+                </p>
+
+                <div className={styles.formGrid}>
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>Email Address *</label>
+                    <input
+                      type="email"
+                      value={newUserEmail}
+                      onChange={(e) => setNewUserEmail(e.target.value)}
+                      placeholder="e.g. secondaryAdmin@gmail.com"
+                      required
+                      className={styles.inputField}
+                    />
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>Mobile Number *</label>
+                    <input
+                      type="text"
+                      value={newUserMobile}
+                      onChange={(e) => setNewUserMobile(e.target.value)}
+                      placeholder="e.g. +91-9999999999"
+                      required
+                      className={styles.inputField}
+                    />
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>Account Password *</label>
+                    <input
+                      type="password"
+                      value={newUserPassword}
+                      onChange={(e) => setNewUserPassword(e.target.value)}
+                      placeholder="minimum 6 characters"
+                      required
+                      className={styles.inputField}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                  <button type="submit" className={styles.submitBtn}>
+                    Register Co-Admin User
+                  </button>
+                </div>
+              </form>
             </div>
           )}
 

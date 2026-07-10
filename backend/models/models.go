@@ -48,3 +48,11 @@ type User struct {
 	Email        string `gorm:"unique;not null" json:"email"`
 	Password     string `gorm:"not null" json:"-"` // Hashed password using bcrypt
 }
+
+type PasswordReset struct {
+	ID        uint      `gorm:"primaryKey" json:"id"`
+	Email     string    `gorm:"index;not null" json:"email"`
+	OTP       string    `gorm:"not null" json:"otp"`
+	ExpiresAt time.Time `gorm:"not null" json:"expiresAt"`
+	CreatedAt time.Time `json:"createdAt"`
+}

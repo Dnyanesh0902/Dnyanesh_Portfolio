@@ -41,9 +41,10 @@ func main() {
 	experienceRepo := repositories.NewExperienceRepository(config.DB)
 	messageRepo := repositories.NewMessageRepository(config.DB)
 	userRepo := repositories.NewUserRepository(config.DB)
+	resetRepo := repositories.NewPasswordResetRepository(config.DB)
 
 	// Dependency Injection (Services)
-	authServ := services.NewAuthService(userRepo)
+	authServ := services.NewAuthService(userRepo, resetRepo)
 	projectServ := services.NewProjectService(projectRepo)
 	skillServ := services.NewSkillService(skillRepo)
 	experienceServ := services.NewExperienceService(experienceRepo)
@@ -65,11 +66,14 @@ func main() {
 		api.GET("/experience", experienceCtrl.GetExperience)
 		api.POST("/contact", messageCtrl.SubmitContact)
 		api.POST("/auth/login", authCtrl.Login)
+		api.POST("/auth/forgot-password", authCtrl.RequestPasswordResetOTP)
+		api.POST("/auth/reset-password", authCtrl.VerifyOTPAndResetPassword)
 
 		// Protected dashboard routes
 		dashboard := api.Group("/dashboard")
 		dashboard.Use(middleware.AuthMiddleware())
 		{
+			dashboard.POST("/users", authCtrl.Register)
 			dashboard.POST("/projects", projectCtrl.CreateProject)
 			dashboard.PUT("/projects/:id", projectCtrl.UpdateProject)
 			dashboard.DELETE("/projects/:id", projectCtrl.DeleteProject)
