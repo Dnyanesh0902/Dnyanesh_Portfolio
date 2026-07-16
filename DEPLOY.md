@@ -52,11 +52,19 @@ Render is a developer-friendly cloud hosting platform that supports Go Web Servi
    - **Value**: `yourGmailAppPassword`
 6. Click **Create Web Service**.
 
-### ⚠️ GORM SQLite Database Warning on Serverless hosting
-The current backend setup utilizes SQLite (`portfolio.db`). Under free serverless platforms (like Render Free tier), the filesystem is **ephemeral** (read-only/reset on restarts). 
-If you write/add new projects or skills in the dashboard, **they will be erased when the Render container sleeps or restarts.**
+### ⚠️ Database Persistence (Preventing Data Wipes on Render)
+Render's Free tier containers sleep after 15 minutes of inactivity and reset their local filesystem. By default, the app uses local SQLite (`portfolio.db`). If you use SQLite in production, **all your added projects, skills, and messages will be wiped when the container restarts or sleeps!**
 
-#### How to Solve:
-To persist your dashboard changes permanently on Render:
-1. **Render Disk (Paid Option)**: Attach a persistent Render Disk mount to store your `portfolio.db` database file.
-2. **Cloud Database (Recommended & Free)**: Modify the backend connection config to connect to a free external cloud database (such as a free PostgreSQL instance on [neon.tech](https://neon.tech) or a MySQL database on [Aiven](https://aiven.io)).
+#### How to Solve (Highly Recommended & Free):
+We have built-in support for **PostgreSQL** in the backend. To persist your database permanently:
+1. Go to **[Neon](https://neon.tech/)** and create a free PostgreSQL database.
+2. Copy your connection string (Data Source Name / URI) from the Neon dashboard. It looks like:
+   `postgres://username:password@some-host.neon.tech/neondb?sslmode=require`
+3. Go to your **Render Dashboard** -> Select your `portfolio-backend` web service.
+4. Click on **Environment** in the left menu.
+5. Add a new Environment Variable:
+   - **Key**: `DATABASE_URL`
+   - **Value**: *Paste your Neon PostgreSQL connection string here*
+6. Click **Save Changes**.
+
+*Render will restart the backend server. The database GORM layer will automatically detect the `DATABASE_URL`, connect to your Neon Postgres database, and run migrations. Your data will now be kept permanently, even when the server goes to sleep!*

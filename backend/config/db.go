@@ -2,9 +2,11 @@ package config
 
 import (
 	"log"
+	"os"
 	"portfolio-backend/models"
 
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -13,7 +15,16 @@ var DB *gorm.DB
 
 func InitDB() {
 	var err error
-	DB, err = gorm.Open(sqlite.Open("portfolio.db"), &gorm.Config{})
+	dbURL := os.Getenv("DATABASE_URL")
+
+	if dbURL != "" {
+		log.Println("DATABASE_URL detected. Connecting to PostgreSQL database...")
+		DB, err = gorm.Open(postgres.Open(dbURL), &gorm.Config{})
+	} else {
+		log.Println("No DATABASE_URL detected. Connecting to local SQLite database...")
+		DB, err = gorm.Open(sqlite.Open("portfolio.db"), &gorm.Config{})
+	}
+
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
