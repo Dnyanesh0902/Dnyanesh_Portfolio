@@ -50,6 +50,7 @@ backend/
 | **POST**| `/api/auth/login` | Administrator authentication (returns JWT) |
 | **POST**| `/api/auth/forgot-password` | Request password reset verification OTP code |
 | **POST**| `/api/auth/reset-password` | Verify OTP and reset password details |
+| **GET** | `/api/resume` | Fetch the dynamic active resume PDF stream |
 
 ### Protected Administrative Endpoints (Requires Bearer JWT)
 | Method | Endpoint | Description |
@@ -66,6 +67,7 @@ backend/
 | **POST**| `/api/dashboard/experience` | Register a new work experience timeline |
 | **PUT** | `/api/dashboard/experience/:id`| Update details of an existing experience |
 | **DELETE**| `/api/dashboard/experience/:id`| Delete an experience timeline entry |
+| **POST**| `/api/dashboard/resume/upload` | Upload and save a new resume PDF file |
 
 ---
 

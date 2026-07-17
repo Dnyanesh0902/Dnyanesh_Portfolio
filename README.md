@@ -44,7 +44,7 @@ DnyaneshPortFolio/
 
 ### 🎨 Frontend Web App (Next.js)
 * **Glassmorphic UI Design**: Sleek dark and off-white gradients, custom responsive layout grids, and interactive micro-animations.
-* **Unified Admin Control Center**: Five-tab dashboard panel to inspect visitor inquiries, create/edit/delete projects, technical skills, and experience items.
+* **Unified Admin Control Center**: Five-tab dashboard panel to inspect visitor inquiries, manage projects/skills/experiences, register co-admins, and upload your PDF resume.
 * **Co-Admin Role Management**: Create and authorize secondary administrator accounts directly from your settings panel.
 * **Forgot Password OTP Flow**: Password reset wizard using verification one-time password (OTP) codes on your login screen.
 * **Secure Client Guards**: Hydration security interceptors and JWT validation logic redirecting users to the login screen on unauthorized query triggers.
@@ -53,6 +53,7 @@ DnyaneshPortFolio/
 * **Layered Clean Architecture**: Structured repository-service-controller flow isolating database access, business rules, and API endpoints.
 * **Strict Controller Standards**: Conformity to panic recovery handlers, manual request body decoders, parameter validation, and unified response wrappers.
 * **Cryptographic Credentials**: Salted SHA-256 equivalent password encryption using Bcrypt.
+* **Database-Persistent Resume**: Serves raw PDF binary streams directly from PostgreSQL, supporting instant, dynamic updates via dashboard uploads.
 * **OTP Verification Engine**: Cryptographically random 6-digit verification code generator with automated 10-minute expiration policies.
 * **Flexible Dispatch Logger**: Automatic email dispatch via SMTP server variables with fallback server logging for free tier testing.
 
