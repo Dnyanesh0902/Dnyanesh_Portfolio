@@ -89,6 +89,9 @@ export default function DashboardPage() {
   const [newUserMobile, setNewUserMobile] = useState('');
   const [newUserPassword, setNewUserPassword] = useState('');
 
+  // Form States - Resume Upload
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+
   // Status message
   const [statusMsg, setStatusMsg] = useState({ text: '', type: '' });
 
@@ -421,6 +424,49 @@ export default function DashboardPage() {
     }
   };
 
+  const handleResumeSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatusMsg({ text: '', type: '' });
+
+    if (!resumeFile) {
+      setStatusMsg({ text: 'Please select a PDF file first.', type: 'error' });
+      return;
+    }
+
+    if (resumeFile.type !== 'application/pdf') {
+      setStatusMsg({ text: 'Invalid file format. Only PDF files are allowed.', type: 'error' });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', resumeFile);
+
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/dashboard/resume/upload`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData,
+      });
+
+      const resData = await res.json();
+      if (!res.ok) {
+        throw new Error(resData.error || 'Failed to upload resume');
+      }
+
+      setStatusMsg({ text: 'Resume PDF uploaded and saved successfully!', type: 'success' });
+      setResumeFile(null);
+      const fileInput = document.getElementById('resume-file-input') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+    } catch (err: any) {
+      setStatusMsg({ text: err.message || 'Error occurred', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDeleteProject = async (id: number) => {
     if (!window.confirm('Are you sure you want to delete this project?')) return;
     try {
@@ -549,7 +595,7 @@ export default function DashboardPage() {
             onClick={() => { setActiveTab('users'); setStatusMsg({ text: '', type: '' }); }}
             className={`${styles.navItem} ${activeTab === 'users' ? styles.navActive : ''}`}
           >
-            <UserPlus size={18} /> Add New User
+            <UserPlus size={18} /> Settings & CV
           </button>
         </nav>
 
@@ -1022,9 +1068,44 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* Tab 5: Users Panel */}
+          {/* Tab 5: Users & Settings Panel */}
           {activeTab === 'users' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3.5rem' }}>
+              
+              {/* Card 1: Resume PDF Uploader */}
+              <form onSubmit={handleResumeSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <h3 className={styles.sectionHeading}>Upload Professional Resume (PDF)</h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '-0.5rem', marginBottom: '0.5rem' }}>
+                  Upload a new PDF copy of your CV. This will immediately update the "Resume" button link in your portfolio header.
+                </p>
+
+                <div className={styles.formGroup} style={{ maxWidth: '400px' }}>
+                  <label className={styles.label}>Select Resume PDF File *</label>
+                  <input
+                    id="resume-file-input"
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        setResumeFile(e.target.files[0]);
+                      }
+                    }}
+                    required
+                    className={styles.inputField}
+                    style={{ paddingTop: '0.65rem' }}
+                  />
+                </div>
+
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+                  <button type="submit" className={styles.submitBtn}>
+                    Upload & Save Resume
+                  </button>
+                </div>
+              </form>
+
+              <hr style={{ border: 'none', borderTop: '1px solid #e2e8f0', margin: '1rem 0' }} />
+
+              {/* Card 2: Create New Administrator Account */}
               <form onSubmit={handleUserSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <h3 className={styles.sectionHeading}>Create New Administrator Account</h3>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '-0.5rem', marginBottom: '0.5rem' }}>

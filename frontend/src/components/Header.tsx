@@ -34,7 +34,7 @@ export default function Header() {
   ];
 
   const handleDownloadResume = () => {
-    window.open('/resume.pdf', '_blank');
+    window.open(`${API_BASE_URL}/api/resume`, '_blank');
   };
 
   return (

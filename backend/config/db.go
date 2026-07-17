@@ -32,7 +32,7 @@ func InitDB() {
 	log.Println("Database connection established")
 
 	// Run Migrations
-	err = DB.AutoMigrate(&models.Project{}, &models.Skill{}, &models.Experience{}, &models.Message{}, &models.User{}, &models.PasswordReset{})
+	err = DB.AutoMigrate(&models.Project{}, &models.Skill{}, &models.Experience{}, &models.Message{}, &models.User{}, &models.PasswordReset{}, &models.Resume{})
 	if err != nil {
 		log.Fatalf("Failed to auto migrate: %v", err)
 	}

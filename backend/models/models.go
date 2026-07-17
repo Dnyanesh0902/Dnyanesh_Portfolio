@@ -56,3 +56,10 @@ type PasswordReset struct {
 	ExpiresAt time.Time `gorm:"not null" json:"expiresAt"`
 	CreatedAt time.Time `json:"createdAt"`
 }
+
+type Resume struct {
+	ID        uint      `gorm:"primaryKey" json:"id"`
+	FileName  string    `json:"fileName"`
+	FileData  []byte    `gorm:"type:blob" json:"-"` // BLOB in SQLite, BYTEA in PostgreSQL
+	UpdatedAt time.Time `json:"updatedAt"`
+}

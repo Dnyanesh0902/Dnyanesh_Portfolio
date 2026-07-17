@@ -42,6 +42,7 @@ func main() {
 	messageRepo := repositories.NewMessageRepository(config.DB)
 	userRepo := repositories.NewUserRepository(config.DB)
 	resetRepo := repositories.NewPasswordResetRepository(config.DB)
+	resumeRepo := repositories.NewResumeRepository(config.DB)
 
 	// Dependency Injection (Services)
 	authServ := services.NewAuthService(userRepo, resetRepo)
@@ -49,6 +50,7 @@ func main() {
 	skillServ := services.NewSkillService(skillRepo)
 	experienceServ := services.NewExperienceService(experienceRepo)
 	messageServ := services.NewMessageService(messageRepo)
+	resumeServ := services.NewResumeService(resumeRepo)
 
 	// Dependency Injection (Controllers)
 	authCtrl := controllers.NewAuthController(authServ)
@@ -56,6 +58,7 @@ func main() {
 	skillCtrl := controllers.NewSkillController(skillServ)
 	experienceCtrl := controllers.NewExperienceController(experienceServ)
 	messageCtrl := controllers.NewMessageController(messageServ)
+	resumeCtrl := controllers.NewResumeController(resumeServ)
 
 	// Setup API routes
 	api := r.Group("/api")
@@ -68,6 +71,7 @@ func main() {
 		api.POST("/auth/login", authCtrl.Login)
 		api.POST("/auth/forgot-password", authCtrl.RequestPasswordResetOTP)
 		api.POST("/auth/reset-password", authCtrl.VerifyOTPAndResetPassword)
+		api.GET("/resume", resumeCtrl.GetResume)
 
 		// Protected dashboard routes
 		dashboard := api.Group("/dashboard")
@@ -85,6 +89,7 @@ func main() {
 			dashboard.DELETE("/experience/:id", experienceCtrl.DeleteExperience)
 			dashboard.GET("/messages", messageCtrl.GetMessages)
 			dashboard.DELETE("/messages/:id", messageCtrl.DeleteMessage)
+			dashboard.POST("/resume/upload", resumeCtrl.UploadResume)
 		}
 	}
 
